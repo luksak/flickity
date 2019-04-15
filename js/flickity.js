@@ -498,8 +498,9 @@ proto.dispatchEvent = function( type, event, args ) {
  * @param {Integer} index - index of the slide
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
  * @param {Boolean} isInstant - will immediately set position at selected cell
+ * @param {Boolean} noEvents - Whether to trigger events
  */
-proto.select = function( index, isWrap, isInstant ) {
+proto.select = function( index, isWrap, isInstant, noEvents ) {
   if ( !this.isActive ) {
     return;
   }
@@ -525,13 +526,15 @@ proto.select = function( index, isWrap, isInstant ) {
     this.setGallerySize();
   }
   // events
-  this.dispatchEvent( 'select', null, [ index ] );
-  // change event if new index
-  if ( index != prevIndex ) {
-    this.dispatchEvent( 'change', null, [ index ] );
+  if (noEvents !== true) {
+    this.dispatchEvent( 'select', null, [ index ] );
+    // change event if new index
+    if ( index != prevIndex ) {
+      //this.dispatchEvent( 'change', null, [ index ] );
+    }
+    // old v1 event name, remove in v3
+    this.dispatchEvent('cellSelect');
   }
-  // old v1 event name, remove in v3
-  this.dispatchEvent('cellSelect');
 };
 
 // wraps position for wrapAround, to move to closest slide. #113

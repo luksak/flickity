@@ -6,23 +6,23 @@
     // AMD
     define( [
       './flickity',
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( Flickity, utils ) {
       return factory( window, Flickity, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('./flickity'),
-      require('fizzy-ui-utils')
+        window,
+        require('./flickity'),
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     factory(
-      window,
-      window.Flickity,
-      window.fizzyUIUtils
+        window,
+        window.Flickity,
+        window.fizzyUIUtils
     );
   }
 
@@ -49,7 +49,7 @@ proto.lazyLoad = function() {
   cellElems.forEach( function( cellElem ) {
     var lazyCellImages = getCellLazyImages( cellElem );
     lazyImages = lazyImages.concat( lazyCellImages );
-  });
+  } );
   // load lazy images
   lazyImages.forEach( function( img ) {
     new LazyLoader( img, this );
@@ -68,7 +68,8 @@ function getCellLazyImages( cellElem ) {
   }
   // select lazy images in cell
   var lazySelector = 'img[data-flickity-lazyload], ' +
-    'img[data-flickity-lazyload-src], img[data-flickity-lazyload-srcset]';
+    'img[data-flickity-lazyload-src], img[data-flickity-lazyload-srcset], ' +
+    'source[data-flickity-lazyload-srcset]';
   var imgs = cellElem.querySelectorAll( lazySelector );
   return utils.makeArray( imgs );
 }
@@ -77,6 +78,8 @@ function getCellLazyImages( cellElem ) {
 
 /**
  * class to handle loading images
+ * @param {Image} img - Image element
+ * @param {Flickity} flickity - Flickity instance
  */
 function LazyLoader( img, flickity ) {
   this.img = img;
@@ -94,7 +97,9 @@ LazyLoader.prototype.load = function() {
     this.img.getAttribute('data-flickity-lazyload-src');
   var srcset = this.img.getAttribute('data-flickity-lazyload-srcset');
   // set src & serset
-  this.img.src = src;
+  if ( this.img.tagName.toLowerCase() === 'img' && src ) {
+    this.img.src = src;
+  }
   if ( srcset ) {
     this.img.setAttribute( 'srcset', srcset );
   }
@@ -131,4 +136,4 @@ Flickity.LazyLoader = LazyLoader;
 
 return Flickity;
 
-}));
+} ) );
